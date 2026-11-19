@@ -9,8 +9,8 @@ DOMAIN = 'https://zakoland.com'
 EMAIL = 'team@zakoland.com'
 # Formspree endpoint for the ZAKO-only account. Replace ZAKO_FORM_ID with the form's hashid
 # (the part after /f/ in the form's endpoint URL), then set FORMS_LIVE = True and rebuild.
-FORM_ACTION = 'https://formspree.io/f/ZAKO_FORM_ID'
-FORMS_LIVE = False
+FORM_ACTION = 'https://formspree.io/f/mdegdyea'
+FORMS_LIVE = True
 
 PHOTOS = {  # name: (widths available, intrinsic w, h)
     'hero': ([800, 1280, 1920], 1920, 992),

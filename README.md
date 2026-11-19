@@ -11,7 +11,7 @@ Static HTML, CSS and a small amount of JavaScript. No framework, no third-party 
 | Website | Built and tested (v4). **Not published.** GitHub Pages is off until the founder approves launch. |
 | Domain | zakoland.com registered at Namecheap. Website DNS still points to Namecheap parking. |
 | Email | team@zakoland.com on Zoho Mail (free plan). MX, SPF, DKIM and DMARC set in Namecheap. |
-| Forms | Preview mode. Waiting for the ZAKO Formspree form ID (see below). |
+| Forms | Connected to the ZAKO Formspree form `mdegdyea` (sends to team@zakoland.com). |
 | Privacy / Terms | Drafts for attorney review. Marked `noindex` and labeled as drafts. |
 
 ## Layout
