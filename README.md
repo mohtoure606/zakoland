@@ -8,7 +8,7 @@ Static HTML, CSS and a small amount of JavaScript. No framework, no third-party 
 
 | Item | State |
 |---|---|
-| Website | Built and tested (v4). **Not published.** GitHub Pages is off until the founder approves launch. |
+| Website | v5 (simplified, premium redesign, 2026-11-20). Launch approved by the founder 2026-11-20. |
 | Domain | zakoland.com registered at Namecheap. Website DNS still points to Namecheap parking. |
 | Email | team@zakoland.com on Zoho Mail (free plan). MX, SPF, DKIM and DMARC set in Namecheap. |
 | Forms | Connected to the ZAKO Formspree form `mdegdyea` (sends to team@zakoland.com). |
@@ -24,7 +24,7 @@ docs/                    the website (this is what GitHub Pages serves)
   js/site.js             header, mobile menu, reveal-on-scroll, forms
   assets/img/            Meridian wordmark SVGs, favicon, social image (og-image.jpg)
   assets/photo/          photographs, JPG + WebP at several widths
-  assets/fonts/          Archivo and Inter variable fonts (SIL Open Font License)
+  assets/fonts/          Instrument Serif, Inter (and Archivo, used only for the social image) — SIL Open Font License
   CNAME robots.txt sitemap.xml
 tools/
   build_pages.py         generates every HTML page; edit content here

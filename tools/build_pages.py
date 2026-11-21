@@ -1,4 +1,4 @@
-"""Build the ZAKO site (v4). Edit content here, then run: python3 tools/build_pages.py
+"""Build the ZAKO site (v5). Edit content here, then run: python3 tools/build_pages.py
 
 Settings to change at launch are the three constants below.
 """
@@ -35,7 +35,7 @@ def pic(name, sizes='100vw', eager=False, alt=None):
             f'<img src="assets/photo/{name}-{ws[-1]}.jpg" srcset="{s("jpg")}" sizes="{sizes}" width="{w}" height="{h}" '
             f'alt="{ALT[name] if alt is None else alt}" {load} decoding="async"></picture>')
 
-NAV = [('builders.html', 'Builders'), ('landowners.html', 'Landowners'), ('about.html', 'About'), ('contact.html', 'Contact')]
+NAV = [('index.html', 'Home'), ('builders.html', 'Builders'), ('landowners.html', 'Landowners'), ('about.html', 'About'), ('contact.html', 'Contact')]
 
 ORG = {
     '@context': 'https://schema.org', '@type': 'Organization', 'name': 'ZAKO Land Partners',
@@ -70,11 +70,11 @@ def head(title, desc, path, noindex=False, preload=None):
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="ZAKO Land Partners wordmark over a Utah valley at dusk">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#FFFFFF">
+<meta name="theme-color" content="#F5F3EE">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-<link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
 {pre}
 <link rel="stylesheet" href="css/site.css">
 <script>document.documentElement.classList.add('js')</script>
@@ -97,14 +97,13 @@ def header(path, over=False):
 
 FOOTER = f'''<footer class="ftr"><div class="wrap">
 <div class="ftr__top">
-<a class="logo" href="index.html" aria-label="ZAKO Land Partners, home"><img src="assets/img/zako-lockup.svg" alt="ZAKO Land Partners" width="120" height="36"></a>
-<p class="ftr__tag">Residential Land Investment &amp; Acquisition<br>Utah</p>
-<nav aria-label="Footer"><a href="builders.html">Builders</a><a href="landowners.html">Landowners</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav>
-<p class="ftr__mail"><a href="mailto:{EMAIL}">{EMAIL}</a></p>
+<p class="ftr__say">Land. Opportunity. <em>Vision.</em></p>
+<div><h2>Explore</h2><nav aria-label="Footer"><a href="builders.html">Builders</a><a href="landowners.html">Landowners</a><a href="about.html">About</a><a href="contact.html">Contact</a></nav></div>
+<div class="ftr__contact"><h2>Contact</h2><p><a href="mailto:{EMAIL}">{EMAIL}</a></p><p>Utah</p></div>
 </div>
-<div class="ftr__fine">
-<p>ZAKO Land Partners does not provide real estate brokerage, engineering, surveying, legal, title or financing services. When those services are needed, they are provided by independent professionals engaged separately.</p>
-<p>&copy; <span data-year>2026</span> ZAKO Land Partners &middot; <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; Photography by Zach Kessinger, Tyler Mower and Michael Tuszynski on Unsplash</p>
+<div class="ftr__bar">
+<a class="logo" href="index.html" aria-label="ZAKO Land Partners, home"><img src="assets/img/zako-white.svg" alt="ZAKO" width="104" height="21"></a>
+<p class="ftr__fine">&copy; <span data-year>2026</span> ZAKO Land Partners. ZAKO does not provide real estate brokerage, engineering, surveying, legal, title or financing services. <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; Photography: Zach Kessinger, Tyler Mower, Michael Tuszynski (Unsplash)</p>
 </div>
 </div></footer>
 <script src="js/site.js" defer></script>
@@ -127,7 +126,7 @@ def form(name, inner, submit):
 </form>'''
 
 def consent(what):
-    return f'<label class="check"><input type="checkbox" name="consent" value="yes" required> I agree that ZAKO may use this information to {what}, as described in the <a href="privacy.html">Privacy Policy</a>.</label>'
+    return f'<label class="check"><input type="checkbox" name="consent" value="yes" required><span>I agree that ZAKO may use this information to {what}, as described in the <a href="privacy.html">Privacy Policy</a>.</span></label>'
 
 def field(id_, label, name, typ='text', req=True, auto='', ph=''):
     opt = '' if req else ' <span class="opt">(optional)</span>'
@@ -150,51 +149,29 @@ def chips(name, items):
 def r(d=0):  # reveal-on-scroll attribute with optional stagger (ms)
     return f' data-r style="--d:{d}ms"' if d else ' data-r'
 
-# ------------------------------------------------------------------ shared sections
-STEPS = [
-    ('Understand the opportunity', 'We start with the property, its location and ownership, and the goals of the people involved.'),
-    ('Research the land', 'We review available information on access, zoning, topography, utilities, water and surrounding development.'),
-    ('Bring the right expertise', 'When a question needs a specialist, qualified independent professionals can help with surveying, engineering, land use, title and legal matters.'),
-    ('Connect the opportunity', 'We look for builders and developers whose needs may align with the property.'),
-    ('Move forward carefully', 'When there is mutual interest, the parties evaluate the opportunity and decide next steps with appropriate professional and transaction support.'),
-]
+def steps(items):
+    lis = ''.join(f'<li{r(i*110)}><span class="num">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for i, (t, d) in enumerate(items))
+    return f'<ol class="steps">{lis}</ol>'
 
-def process(heading_tag='h2', intro=True):
-    items = ''.join(f'<li{r(i*110)}><span class="num" aria-hidden="true">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for i, (t, d) in enumerate(STEPS))
-    lead = '<p class="lead"' + r(80) + '>A clear sequence from first look to the right connection, with the right people involved at each step.</p>' if intro else ''
-    return f'''<section class="process" id="how" aria-labelledby="how-h"><div class="wrap">
-<div class="process__head"><p class="eyebrow"{r()}>How we work</p>
-<{heading_tag} id="how-h" class="h-lines"{r(40)}><span>Five steps.</span> <span>No shortcuts.</span></{heading_tag}>{lead}</div>
-<ol class="steps">{items}</ol>
-</div></section>'''
-
-AUDIENCE = [
-    ('Builders and developers', 'Researched land opportunities and organized property information to help you evaluate a potential acquisition.'),
-    ('Landowners', 'A professional, no-pressure starting point for a conversation about your land.'),
-    ('Real estate professionals', 'A working relationship with a team that does its homework, built around appropriate, properly structured transactions.'),
-    ('Engineers and surveyors', 'Specialized expertise matters. Qualified independent firms can be engaged when a site needs it.'),
-    ('Title, legal, planning and financing', 'Organized opportunities where the right expertise can help a transaction come together properly.'),
-]
-
-def network():
-    rows = ''.join(f'<li{r(i*70)}><h3>{a}</h3><p>{d}</p></li>' for i, (a, d) in enumerate(AUDIENCE))
-    return f'''<section class="band band--ivory" aria-labelledby="net-h"><div class="wrap">
-<div class="split split--head">
-<div><p class="eyebrow"{r()}>Our network</p><h2 id="net-h" class="h-lines"{r(40)}><span>A strong network.</span> <span>A thoughtful process.</span></h2></div>
-<p class="lead"{r(120)}>Residential land opportunities often need more than one perspective. We are building relationships with experienced real estate, surveying, engineering, land use, title, legal and financing professionals, so the right expertise can join the process when it is needed.</p>
+def opening(label, h1, lead, cta, photo, extra_cls=''):
+    return f'''<section class="open {extra_cls}" aria-labelledby="h"><div class="wrap open__grid">
+<div>
+<p class="label rise" style="--d:80ms">{label}</p>
+<h1 id="h" class="rise" style="--d:200ms">{h1}</h1>
+<p class="lead rise" style="--d:360ms">{lead}</p>
+{('<div class="btns rise" style="--d:480ms">' + cta + '</div>') if cta else ''}
 </div>
-<ul class="audience">{rows}</ul>
-<p class="note"{r()}>ZAKO does not provide real estate brokerage, engineering, surveying, legal, title or financing services. Those services are provided by independent, qualified professionals when they are separately engaged.</p>
+<div class="frame frame--land rise" style="--d:300ms">{pic(photo, '(min-width: 901px) 40vw, 90vw', eager=True)}</div>
 </div></section>'''
 
-# ------------------------------------------------------------------ HOME
+# ------------------------------------------------------------------ HOME (hero preserved)
 home = f'''
 <section class="photo photo--hero" aria-labelledby="h">
 {pic('hero', eager=True)}
 <div class="photo__in">
 <div class="hero__copy">
-<p class="eyebrow eyebrow--light rise" style="--d:100ms">Residential Land Investment &amp; Acquisition</p>
-<h1 id="h"><span class="rise" style="--d:250ms">Land.</span> <span class="rise" style="--d:420ms">Opportunity.</span> <span class="rise" style="--d:590ms">Vision.</span></h1>
+<p class="label label--light rise" style="--d:100ms">Residential Land Investment &amp; Acquisition</p>
+<h1 id="h"><span class="rise" style="--d:250ms">Land.</span> <span class="rise" style="--d:420ms">Opportunity.</span> <span class="rise" style="--d:590ms"><em>Vision.</em></span></h1>
 <p class="sub rise" style="--d:820ms">We find residential land in Utah, research what it can become, and connect it with the builders and developers who need it.</p>
 </div>
 <div class="btns rise" style="--d:1000ms"><a class="btn btn--light" href="builders.html">For builders</a><a class="btn btn--ghost" href="landowners.html">For landowners</a></div>
@@ -202,45 +179,44 @@ home = f'''
 <span class="cue" aria-hidden="true"></span>
 </section>
 
-<section class="band intro" aria-labelledby="what-h"><div class="wrap">
-<p class="eyebrow center"{r()}>What we do</p>
-<h2 id="what-h" class="statement"{r(80)}>We look closely at land, understand what it could support, and bring the right opportunities to the builders shaping Utah's communities.</h2>
-<ul class="facts">
-<li{r(0)}><span>Who</span>Homebuilders, developers and landowners</li>
-<li{r(100)}><span>Where</span>Utah County, Salt Lake County and growing Utah markets</li>
-<li{r(200)}><span>How</span>Research first, clear communication, the right professionals</li>
-</ul>
+<section class="band" aria-labelledby="what-h"><div class="wrap intro">
+<p class="label"{r()}><b>01</b> What we do</p>
+<div>
+<h2 id="what-h" class="statement"{r(80)}>We look closely at land, understand what it could support, and bring the right opportunities to <em>the builders shaping Utah&rsquo;s communities.</em></h2>
+<div class="intro__foot"{r(160)}>
+<p><span>Focus</span>Residential land</p>
+<p><span>Markets</span>Utah County, Salt Lake County and growing Utah markets</p>
+<p><span>Approach</span>Research first, clear communication</p>
+</div>
+</div>
 </div></section>
 
 <section class="pair" aria-label="Who we work with">
-<a class="photo photo--half tile" href="builders.html">{pic('plan', '(min-width: 821px) 50vw, 100vw')}
-<div class="photo__in"><div{r()}><p class="eyebrow eyebrow--light">For builders and developers</p><h2>Tell us what you build.</h2><p>Share your markets and criteria. We look for land that fits.</p>
-<span class="more">Share your criteria</span></div></div></a>
-<a class="photo photo--half tile" href="landowners.html">{pic('valley', '(min-width: 821px) 50vw, 100vw')}
-<div class="photo__in"><div{r(120)}><p class="eyebrow eyebrow--light">For landowners</p><h2>Own land in Utah?</h2><p>Start a conversation. No cost, no pressure, and a straight answer.</p>
-<span class="more">Tell us about it</span></div></div></a>
+<a class="photo photo--half tile" href="builders.html">{pic('plan', '(min-width: 901px) 50vw, 100vw')}
+<div class="photo__in"><div{r()}><p class="label label--light"><b style="color:inherit">02</b> Builders</p><h2>Tell us what you build.</h2><p>Share your markets and criteria. We look for land that may fit your requirements.</p>
+<span class="arrow">For builders</span></div></div></a>
+<a class="photo photo--half tile" href="landowners.html">{pic('valley', '(min-width: 901px) 50vw, 100vw')}
+<div class="photo__in"><div{r(120)}><p class="label label--light"><b style="color:inherit">03</b> Landowners</p><h2>Own land in Utah?</h2><p>Start a conversation. No cost, no pressure, and a straight answer.</p>
+<span class="arrow">For landowners</span></div></div></a>
 </section>
 
-{process()}
-
-{network()}
-
 <section class="band" aria-labelledby="founder"><div class="wrap founder">
-<div class="frame"{r()}>{pic('founder', '(min-width: 821px) 40vw, 90vw')}</div>
+<div class="frame"{r()}>{pic('founder', '(min-width: 901px) 40vw, 90vw')}</div>
 <div>
-<p class="eyebrow"{r()}>Our founder</p>
-<h2 id="founder"{r(60)}>Founded with a civil engineering perspective.</h2>
-<p class="lead mt"{r(120)}>ZAKO was founded by Mohamed Toure. His background in land surveying and civil engineering shapes how we look at every site: what it is today, and what it could become.</p>
-<p class="mt"{r(180)}><a class="link" href="about.html">Read his story</a></p>
+<p class="label"{r()}><b>04</b> Founder</p>
+<h2 id="founder"{r(60)}>Founded with a civil engineering <em>perspective.</em></h2>
+<p class="lead"{r(120)}>ZAKO was founded by Mohamed Toure. His background in land surveying and civil engineering shapes how we look at every site: what it is today, and what it could become.</p>
+<a class="arrow"{r(180)} href="about.html">Read his story</a>
 </div>
 </div></section>
 
 <section class="photo photo--end" aria-labelledby="c">
 {pic('dawn')}
 <div class="photo__in"><div>
-<h2 id="c"{r()}>Start the conversation.</h2>
-<p class="sub"{r(100)}>Builders, landowners and land professionals across Utah.</p>
-<div class="btns"{r(200)}><a class="btn btn--light" href="contact.html">Contact ZAKO</a></div>
+<p class="label label--light"{r()}>Contact</p>
+<h2 id="c"{r(60)}>Start the conversation.</h2>
+<p class="sub"{r(100)} style="margin-top:18px;opacity:.95">Builders, landowners and land professionals across Utah.</p>
+<div class="btns"{r(160)}><a class="btn btn--light" href="contact.html">Contact ZAKO</a></div>
 </div></div>
 </section>'''
 page('index.html', 'ZAKO Land Partners | Utah Residential Land Investment & Acquisition',
@@ -248,174 +224,110 @@ page('index.html', 'ZAKO Land Partners | Utah Residential Land Investment & Acqu
      home, over=True, preload='hero')
 
 # ------------------------------------------------------------------ BUILDERS
-MARKETS = ['Alpine', 'Highland', 'Draper', 'Lehi', 'Saratoga Springs', 'Eagle Mountain', 'Utah County', 'Salt Lake County', 'Elsewhere in Utah']
-TYPES = ['Infill lots', 'Older homes on large lots', 'Small subdivisions', 'Larger tracts', 'Assemblages', 'Townhome sites']
-BENEFITS = [
-    ('Researched opportunities', 'Land we have looked at before it reaches you, not a list sent to everyone.'),
-    ('Property characteristics', 'Zoning, access, frontage, topography, utilities and water, summarized in plain terms.'),
-    ('Constraints flagged early', 'Potential issues identified up front, so you can rule a site in or out sooner.'),
-    ('Matched to your criteria', 'Opportunities filtered by your markets, lot sizes, product and price range.'),
-    ('Organized information', 'Sources, open questions, and what is verified versus preliminary, in one package.'),
-    ('A relationship, not a pitch', 'Direct communication, and an honest answer when a site does not fit.'),
-]
-ben = ''.join(f'<li{r((i % 2) * 90)}><span class="num" aria-hidden="true">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for i, (t, d) in enumerate(BENEFITS))
+MARKETS = ['Lehi', 'Saratoga Springs', 'Eagle Mountain', 'American Fork', 'Spanish Fork', 'South Utah County', 'Salt Lake County', 'Elsewhere in Utah']
 builders = f'''
-<section class="photo photo--page" aria-labelledby="h">
-{pic('plan', eager=True)}
-<div class="photo__in"><div>
-<p class="eyebrow eyebrow--light rise" style="--d:100ms">For builders and developers</p>
-<h1 id="h" class="rise" style="--d:250ms">Tell us what you build. We will look for the land.</h1>
-</div></div>
-</section>
+{opening('For builders', 'Tell us what you build. <em>We will look for the land.</em>',
+ 'ZAKO identifies and researches residential land opportunities in Utah. Share your acquisition criteria and target markets, and we will look for opportunities that may fit your requirements.',
+ '<a class="btn" href="#criteria">Share your criteria</a>', 'plan')}
 
-<section class="band" aria-labelledby="what"><div class="wrap">
-<div class="split split--head">
-<div><p class="eyebrow"{r()}>What we bring</p><h2 id="what"{r(40)}>Land that fits, with the homework done.</h2></div>
-<p class="lead"{r(120)}>We want to understand where you build, what you build and what you are looking for. Your criteria tell us where to look and what to rule out.</p>
-</div>
-<ul class="grid6">{ben}</ul>
+<section class="band band--alt" aria-labelledby="how"><div class="wrap">
+<div class="head2"><p class="label"{r()}>How it works</p><h2 id="how"{r(60)}>A clear, focused process.</h2></div>
+{steps([
+ ('Share your criteria', 'Your target markets, product types, lot sizes and any requirements that would rule a site out.'),
+ ('We identify and research', 'We look for residential land that may match your criteria and review the available information on each property.'),
+ ('We share what may fit', 'When an opportunity may align with your requirements, we present our findings and discuss next steps. If nothing fits, we will tell you.'),
+])}
 </div></section>
 
-<section class="band band--tight band--ivory" aria-labelledby="limits"><div class="wrap callout"{r()}>
-<h2 id="limits">Research is where we start, not where you stop.</h2>
-<p>Our property research is preliminary. ZAKO does not guarantee zoning approvals, utility availability, development feasibility or project outcomes. Every site should be confirmed through your own due diligence and qualified professionals.</p>
-</div></section>
-
-{process(intro=False)}
-
-<section class="band band--ivory" id="criteria" aria-labelledby="f"><div class="wrap split">
-<div><p class="eyebrow"{r()}>Share your criteria</p><h2 id="f"{r(40)}>Tell us what you are looking for.</h2>
-<p class="lead mt"{r(100)}>It takes about two minutes and creates no obligation. We use it to bring you opportunities that fit.</p></div>
+<section class="band" id="criteria" aria-labelledby="f"><div class="wrap split">
+<div><p class="label"{r()}>Share your criteria</p><h2 id="f"{r(60)}>Tell us what you are looking for.</h2>
+<p class="lead"{r(120)}>It takes about two minutes and creates no obligation.</p>
+<p class="fine"{r(180)}>Property information we share is preliminary and should be confirmed through your own due diligence.</p></div>
 {form('builder-criteria', f"""
 <div class="row2">{field('b-company','Company','company',auto='organization')}{field('b-name','Name','name',auto='name')}</div>
 <div class="row2">{field('b-email','Business email','email','email',auto='email')}{field('b-phone','Phone','phone','tel',False,'tel')}</div>
 <fieldset data-require-one><legend>Target markets</legend><div class="chips">{chips('markets', MARKETS)}</div></fieldset>
-<fieldset><legend>Property types <span class="opt">(optional)</span></legend><div class="chips">{chips('property_types', TYPES)}</div></fieldset>
-{field('b-size','Lot sizes or acreage','lot_sizes',req=False,ph='For example: 0.5 to 5 acres')}
-{textarea('b-more','Anything else','criteria',ph='Price range, zoning, utilities, timing')}
+{textarea('b-more','Criteria','criteria',ph='Lot sizes or acreage, product type, price range, timing')}
 {consent('contact me about land opportunities')}""", 'Send criteria')}
 </div></section>'''
-page('builders.html', 'Land Acquisition for Utah Builders | ZAKO Land Partners',
-     'Researched residential development land for Utah homebuilders and developers, matched to your markets and acquisition criteria.',
-     builders, over=True, preload=None)
+page('builders.html', 'For Builders | ZAKO Land Partners',
+     'Share your acquisition criteria and target markets. ZAKO researches residential land in Utah that may fit what you build.', builders)
 
 # ------------------------------------------------------------------ LANDOWNERS
-LSTEPS = [
-    ('Start a conversation', 'Share the address or parcel number and a little about your plans. There is no cost and no obligation.'),
-    ('We take a careful look', 'We review public information about the property and what builders in the area are looking for.'),
-    ('We talk about options', 'If there may be a fit, we explain what we see and what a next step could look like. If not, we tell you.'),
-]
-lst = ''.join(f'<li{r(i*110)}><span class="num" aria-hidden="true">{i+1:02d}</span><h3>{t}</h3><p>{d}</p></li>' for i, (t, d) in enumerate(LSTEPS))
 landowners = f'''
-<section class="photo photo--page" aria-labelledby="h">
-{pic('valley', eager=True)}
-<div class="photo__in"><div>
-<p class="eyebrow eyebrow--light rise" style="--d:100ms">For landowners</p>
-<h1 id="h" class="rise" style="--d:250ms">Your land may be worth a closer look.</h1>
-</div></div>
-</section>
+{opening('For landowners', 'Your land may be worth <em>a closer look.</em>',
+ 'ZAKO is interested in learning about residential land opportunities in Utah. Share basic information about your property, and we will review whether there may be a fit.',
+ '<a class="btn" href="#property">Tell us about your property</a>', 'valley')}
 
-<section class="band" aria-labelledby="how-l"><div class="wrap">
-<div class="split split--head">
-<div><p class="eyebrow"{r()}>How it works</p><h2 id="how-l"{r(40)}>Simple, unhurried and clear.</h2></div>
-<p class="lead"{r(120)}>You do not need to know anything about development to start. Tell us a little about your property and we will take it from there.</p>
-</div>
-<ol class="steps steps--3">{lst}</ol>
-</div></section>
-
-<section class="band band--tight band--ivory" aria-labelledby="know"><div class="wrap split">
-<div><h2 id="know"{r()}>Good to know</h2></div>
-<ul class="points">
-<li{r()}><h3>We do not represent you</h3><p>ZAKO is not a real estate agent, and we do not list or market your property.</p></li>
-<li{r(60)}><h3>Bring your own advisors</h3><p>You are welcome to involve your own agent, attorney or advisor at any point.</p></li>
-<li{r(120)}><h3>Your information stays private</h3><p>We share property details with others only with your permission.</p></li>
-<li{r(180)}><h3>Nothing is final until it is in writing</h3><p>A conversation creates no obligation. Any transaction would need a written agreement you have reviewed and signed.</p></li>
-</ul>
+<section class="band band--alt" aria-labelledby="how"><div class="wrap">
+<div class="head2"><p class="label"{r()}>How it works</p><h2 id="how"{r(60)}>Simple, unhurried and clear.</h2></div>
+{steps([
+ ('Start a conversation', 'Share the address or parcel number and a little about your plans. There is no cost.'),
+ ('We take a careful look', 'We review public information about the property and what builders in the area are looking for.'),
+ ('We discuss options', 'If there may be a fit, we explain what we see and what a next step could look like. If not, we tell you.'),
+])}
 </div></section>
 
 <section class="band" id="property" aria-labelledby="f"><div class="wrap split">
-<div><p class="eyebrow"{r()}>Tell us about your property</p><h2 id="f"{r(40)}>Start with the basics.</h2>
-<p class="lead mt"{r(100)}>An address or parcel number is enough to begin.</p></div>
+<div><p class="label"{r()}>Your property</p><h2 id="f"{r(60)}>Start with the basics.</h2>
+<ul class="assure"{r(120)}>
+<li>Starting a conversation creates no obligation to sell.</li>
+<li>You are welcome to involve your own agent, attorney or advisor at any point.</li>
+<li>We share property details with others only with your permission.</li>
+</ul>
+<p class="fine"{r(180)}>ZAKO is not a real estate agent and does not list or market property. Any transaction would require a written agreement reviewed and signed by you.</p></div>
 {form('property-owner', f"""
 <div class="row2">{field('o-name','Name','name',auto='name')}{field('o-email','Email','email','email',auto='email')}</div>
-<div class="row2">{field('o-phone','Phone','phone','tel',False,'tel')}
-{select('o-rel','You are the','relationship',['Owner','Co-owner','Authorized representative'])}</div>
-{field('o-addr','Property address or parcel number','property')}
-<div class="row2">{select('o-county','County','county',['Utah County','Salt Lake County','Another Utah county'])}
-{field('o-acres','Approximate acreage','acreage',req=False)}</div>
+<div class="row2">{field('o-phone','Phone','phone','tel',False,'tel')}{select('o-rel','You are the','relationship',['Owner','Co-owner','Authorized representative'])}</div>
+<div class="row2">{field('o-addr','Address or parcel number','property')}{select('o-county','County','county',['Utah County','Salt Lake County','Another Utah county'])}</div>
 {textarea('o-msg','Anything we should know','message')}
 {consent('review the property and contact me')}""", 'Submit property')}
 </div></section>'''
-page('landowners.html', 'Utah Land Opportunities for Landowners | ZAKO Land Partners',
-     'Own residential land in Utah? Start a no-pressure conversation with ZAKO about what your property could support.',
-     landowners, over=True)
+page('landowners.html', 'For Landowners | ZAKO Land Partners',
+     'Own residential land in Utah? Share a few details and ZAKO will take a careful look. No obligation.', landowners)
 
 # ------------------------------------------------------------------ ABOUT
 STORY = [
     'I am originally from Mali, and Utah has become home. It is where I studied civil engineering.',
     'Before entering engineering, I worked on survey crews across Utah, gaining firsthand experience with property boundaries, land measurement and the early stages of residential development. Today, my work in civil engineering includes water and irrigation projects.',
     'These experiences shaped how I understand land. Its potential goes beyond acreage or location. Access, topography, drainage, water, utilities and surrounding development all play an important role in what a property may become.',
-    'I founded ZAKO to bring that perspective to residential land investment and acquisition. Our focus is to identify promising land, understand the factors that shape its potential, and connect it with the builders and developers who may be the right fit.',
-    'We believe good land decisions begin with careful research, clear communication and strong professional relationships.',
+    'I founded ZAKO to bring that perspective to residential land investment and acquisition, with the goal of building a respected land company grounded in careful research and clear communication.',
 ]
-story = ''.join(f'<p{r(60 + i*40)}>{s}</p>' for i, s in enumerate(STORY))
+story = ''.join(f'<p{r(60 + i*40)}>{x}</p>' for i, x in enumerate(STORY))
 about = f'''
-<section class="phead"><div class="wrap">
-<p class="eyebrow rise" style="--d:100ms">About ZAKO</p>
-<h1 class="rise" style="--d:220ms">A Utah land company with an engineer's eye.</h1>
-<p class="lead rise" style="--d:380ms">ZAKO identifies residential land opportunities and connects them with the builders shaping Utah's communities. We do the research first, so the right opportunities reach the right people.</p>
-</div></section>
+{opening('About ZAKO', 'A Utah land company with <em>an engineer&rsquo;s eye.</em>',
+ 'ZAKO Land Partners identifies residential land opportunities in Utah and evaluates them with a careful, research-first perspective. The company was founded by Mohamed Toure.', '', 'founder', 'about-open')}
 
-<section class="band band--ivory" aria-labelledby="f"><div class="wrap founder founder--story">
-<div class="frame"{r()}>{pic('founder', '(min-width: 821px) 40vw, 90vw')}</div>
+<section class="band band--alt" aria-labelledby="f"><div class="wrap split">
+<div><p class="label"{r()}>Founder</p><h2 id="f"{r(60)}>Why I started ZAKO</h2></div>
 <div class="story">
-<p class="eyebrow"{r()}>Founder</p>
-<h2 id="f"{r(40)}>Why I started ZAKO</h2>
 {story}
-<p class="sign"{r(280)}>Mohamed Toure<span>Founder, ZAKO Land Partners</span></p>
+<p class="sign"{r(240)}>Mohamed Toure<span>Founder, ZAKO Land Partners</span></p>
 </div>
-</div></section>
-
-<section class="band" aria-labelledby="b"><div class="wrap split">
-<div><p class="eyebrow"{r()}>What we believe</p><h2 id="b"{r(40)}>Principles we work by</h2></div>
-<ul class="points">
-<li{r()}><h3>Demand comes first</h3><p>We learn what builders need before we look for land.</p></li>
-<li{r(60)}><h3>Research before promises</h3><p>We separate what we know from what still needs checking, and we say so.</p></li>
-<li{r(120)}><h3>The right expertise</h3><p>Specialized questions go to qualified, independent professionals.</p></li>
-<li{r(180)}><h3>Utah first</h3><p>We are starting where we know the ground, and growing with the people we work with.</p></li>
-</ul>
-</div></section>
-
-{process(intro=False)}'''
+</div></section>'''
 page('about.html', 'About | ZAKO Land Partners',
-     'ZAKO Land Partners was founded in Utah by Mohamed Toure to bring a surveying and civil engineering perspective to residential land acquisition.', about)
+     'ZAKO Land Partners was founded in Utah by Mohamed Toure, bringing a surveying and civil engineering perspective to land investment and acquisition.', about)
 
 # ------------------------------------------------------------------ CONTACT
-ROLES = ['Builder or developer', 'Landowner', 'Real estate professional', 'Engineering or surveying professional', 'Investor or capital partner', 'Other']
 contact = f'''
 <section class="phead"><div class="wrap">
-<p class="eyebrow rise" style="--d:100ms">Contact</p>
-<h1 class="rise" style="--d:220ms">Start the conversation.</h1>
-<p class="lead rise" style="--d:380ms">Tell us who you are and what you have in mind. We read every message and will get back to you.</p>
+<p class="label rise" style="--d:80ms">Contact</p>
+<h1 class="rise" style="--d:200ms">Start the <em>conversation.</em></h1>
 </div></section>
-<section class="band band--ivory" id="general" aria-labelledby="f"><div class="wrap split">
-<div class="aside">
-<h2 id="f"{r()}>Send a message</h2>
+<section class="band band--flush" aria-label="Contact form"><div class="wrap split">
+<div><p class="lead"{r()}>Tell us who you are and what you have in mind. We read every message and will respond promptly.</p>
 <dl class="contacts"{r(80)}>
-<dt>Email</dt><dd><a class="link" href="mailto:{EMAIL}">{EMAIL}</a></dd>
-<dt>Based in</dt><dd>Utah</dd>
-<dt>Builders</dt><dd><a class="link" href="builders.html#criteria">Share your criteria</a></dd>
-<dt>Landowners</dt><dd><a class="link" href="landowners.html#property">Tell us about your property</a></dd>
+<div><dt>Email</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd></div>
+<div><dt>Based in</dt><dd>Utah</dd></div>
 </dl></div>
 {form('general', f"""
 <div class="row2">{field('g-name','Name','name',auto='name')}{field('g-email','Email','email','email',auto='email')}</div>
-<div class="row2">{field('g-co','Company','company',req=False,auto='organization')}{field('g-phone','Phone','phone','tel',False,'tel')}</div>
-{select('g-role','I am a','role',ROLES)}
-{textarea('g-msg','How can we help?','message',req=True)}
+{select('g-role','I am a','role',['Builder or developer','Landowner','Other'])}
+{textarea('g-msg','Message','message',req=True)}
 {consent('respond to me')}""", 'Send message')}
 </div></section>'''
 page('contact.html', 'Contact | ZAKO Land Partners',
-     'Contact ZAKO Land Partners about Utah residential land opportunities. Builders, landowners and land professionals welcome.', contact)
+     'Contact ZAKO Land Partners about residential land in Utah. team@zakoland.com', contact)
 
 # ------------------------------------------------------------------ LEGAL (drafts for attorney review; noindex)
 DRAFT = '<p class="draft"><strong>Draft for attorney review.</strong> This policy is not in effect until it is finalized.</p>'
@@ -445,7 +357,7 @@ terms = f'''<section class="phead phead--sm"><div class="wrap"><h1>Terms of Use<
 page('terms.html', 'Terms of Use | ZAKO Land Partners', 'Terms of use for the ZAKO Land Partners website.', terms, noindex=True)
 
 page('404.html', 'Page Not Found | ZAKO Land Partners', 'Page not found.',
-     '<section class="phead phead--404"><div class="wrap"><p class="eyebrow">404</p><h1>This page could not be found.</h1>'
+     '<section class="phead phead--404"><div class="wrap"><p class="label">404</p><h1>This page could not be found.</h1>'
      '<p class="lead">The link may be out of date. Everything else is a click away.</p>'
      '<div class="btns"><a class="btn" href="index.html">Go to the homepage</a><a class="btn btn--line" href="contact.html">Contact us</a></div></div></section>',
      noindex=True)
