@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-forms="live">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 
@@ -22,7 +22,7 @@
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="assets/img/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-<link rel="preload" href="assets/fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
 
 <link rel="stylesheet" href="css/site.css">
 <script>document.documentElement.classList.add('js')</script>
@@ -41,26 +41,19 @@
 <main id="main">
 <section class="phead"><div class="wrap">
 <p class="label rise" style="--d:80ms">Contact</p>
-<h1 class="rise" style="--d:200ms">Start the <em>conversation.</em></h1>
+<h1 class="rise" style="--d:200ms">Start the conversation.</h1>
 </div></section>
-<section class="band band--flush" aria-label="Contact form"><div class="wrap split">
-<div><p class="lead" data-r>Tell us who you are and what you have in mind. We read every message and will respond promptly.</p>
+<section class="band band--flush" aria-label="Contact by email"><div class="wrap split">
+<div><p class="lead" data-r>Tell us who you are and what you have in mind. Email is the best way to reach us.</p>
 <dl class="contacts" data-r style="--d:80ms">
 <div><dt>Email</dt><dd><a href="mailto:team@zakoland.com">team@zakoland.com</a></dd></div>
 <div><dt>Based in</dt><dd>Utah</dd></div>
 </dl></div>
-<form class="form" name="general" action="https://formspree.io/f/mdegdyea" method="POST" data-zako-form novalidate>
-<input type="hidden" name="_subject" value="ZAKO website: general">
-<input type="hidden" name="form" value="general">
-<p class="hp" aria-hidden="true"><label>Leave this field blank <input name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
-
-<div class="row2"><div class="field"><label for="g-name">Name</label><input id="g-name" name="name" type="text" required autocomplete="name"></div><div class="field"><label for="g-email">Email</label><input id="g-email" name="email" type="email" required autocomplete="email"></div></div>
-<div class="field"><label for="g-role">I am a</label><select id="g-role" name="role" required><option value="">Select</option><option>Builder or developer</option><option>Landowner</option><option>Other</option></select></div>
-<div class="field"><label for="g-msg">Message</label><textarea id="g-msg" name="message" required></textarea></div>
-<label class="check"><input type="checkbox" name="consent" value="yes" required><span>I agree that ZAKO may use this information to respond to me, as described in the <a href="privacy.html">Privacy Policy</a>.</span></label>
-<div class="status" role="status" tabindex="-1"></div>
-<div><button class="btn" type="submit">Send message</button></div>
-</form>
+<div class="mailbox">
+<p class="mailbox__note">This website is not currently accepting submissions through online forms. Please contact us by email.</p>
+<p><a class="mailbox__addr" href="mailto:team@zakoland.com?subject=Website%20inquiry">team@zakoland.com</a></p>
+<div><a class="btn" href="mailto:team@zakoland.com?subject=Website%20inquiry">Email ZAKO</a></div>
+</div>
 </div></section>
 </main>
 <footer class="ftr"><div class="wrap">
@@ -71,7 +64,7 @@
 </div>
 <div class="ftr__bar">
 <a class="logo" href="index.html" aria-label="ZAKO Land Partners, home"><img src="assets/img/zako-white.svg" alt="ZAKO" width="104" height="21"></a>
-<p class="ftr__fine">&copy; <span data-year>2026</span> ZAKO Land Partners. ZAKO does not provide real estate brokerage, engineering, surveying, legal, title or financing services. <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; Photography: Zach Kessinger, Tyler Mower, Michael Tuszynski (Unsplash)</p>
+<p class="ftr__fine">&copy; <span data-year>2026</span> ZAKO Land Partners. ZAKO is not a real estate brokerage and does not provide engineering, surveying, legal, title or financing services. Photography: Zach Kessinger, Tyler Mower, Michael Tuszynski (Unsplash)</p>
 </div>
 </div></footer>
 <script src="js/site.js" defer></script>

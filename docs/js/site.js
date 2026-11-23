@@ -83,7 +83,7 @@
         const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
         if (!res.ok) throw new Error(String(res.status));
         form.reset();
-        show('Thank you. Your message reached us, and we will be in touch.', true);
+        show('Thank you. Your message was received.', true);
       } catch (err) {
         show('Something went wrong and your message was not sent. Please try again, or email team@zakoland.com.', false);
       } finally {
